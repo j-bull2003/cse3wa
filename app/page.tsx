@@ -1,103 +1,87 @@
-import Image from "next/image";
+import Link from "next/link";
+import Tabs from "./components/tabs";
 
+/* Hero is minimal markup; neon vibe comes from CSS utilities. */
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <section className="space-y-8">
+      <header className="text-center">
+        <h1 className="glitch text-4xl font-extrabold" data-text="NEON / HACK / LAB">
+          NEON / HACK / LAB
+        </h1>
+        <p className="mx-auto mt-3 max-w-2xl text-cyan-100/80">
+          A cyber-styled Next.js showcase: slick tabs, a tiny game, a todo, a blog, and a Moodle-ready tabs generator.
+        </p>
+      </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      {/* Pretty in-site tabs for highlights */}
+      <Tabs
+        items={[
+          {
+            label: "Tabs Generator",
+            content: (
+              <div>
+                <p>Create <strong>copy-paste</strong> HTML + JS (inline CSS only) for Moodle.</p>
+                <Link href="/tabs" className="mt-2 inline-block rounded-xl border border-cyan-400/50 bg-cyan-500/10 px-3 py-2 text-sm">
+                  Open Generator →
+                </Link>
+              </div>
+            ),
+          },
+          {
+            label: "Game",
+            content: (
+              <div>
+                <p>Classic Tic-Tac-Toe with neon styling.</p>
+                <Link href="/play" className="mt-2 inline-block rounded-xl border border-violet-400/50 bg-violet-500/10 px-3 py-2 text-sm">
+                  Play Now →
+                </Link>
+              </div>
+            ),
+          },
+          {
+            label: "Todo",
+            content: (
+              <div>
+                <p>Quick tasks stored locally (no backend).</p>
+                <Link href="/todo" className="mt-2 inline-block rounded-xl border border-emerald-400/50 bg-emerald-500/10 px-3 py-2 text-sm">
+                  Open Todo →
+                </Link>
+              </div>
+            ),
+          },
+          {
+            label: "Blog",
+            content: (
+              <div>
+                <p>Write posts, search, and read — all in the browser.</p>
+                <Link href="/blog" className="mt-2 inline-block rounded-xl border border-pink-400/50 bg-pink-500/10 px-3 py-2 text-sm">
+                  Open Blog →
+                </Link>
+              </div>
+            ),
+          },
+        ]}
+      />
+
+      {/* Quick links */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { href: "/tabs", title: "Moodle Tabs", desc: "Inline CSS output — copy & paste." },
+          { href: "/play", title: "Play", desc: "Neon Tic-Tac-Toe." },
+          { href: "/todo", title: "Todo", desc: "Simple, local, fast." },
+          { href: "/blog", title: "Blog", desc: "Create & read posts." },
+        ].map((c) => (
+          <Link
+            key={c.href}
+            href={c.href}
+            className="rounded-2xl border border-white/10 bg-[var(--card)] p-4 shadow-[0_0_30px_rgba(167,139,250,.15)] transition hover:shadow-[0_0_40px_rgba(34,211,238,.35)]"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            <h2 className="text-lg font-semibold">{c.title}</h2>
+            <p className="mt-1 text-sm text-cyan-100/80">{c.desc}</p>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
