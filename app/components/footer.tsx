@@ -8,7 +8,7 @@ export default function Footer() {
 
   return (
     <footer className="mt-16 border-t border-white/10 bg-black/40">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8text-sm text-cyan-100/80">
+      <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-cyan-100/80">
         <p>© {year} {NAME} • {STUDENT} • {today}</p>
         <p className="mt-1">Neon grid • A11y-first • Cookie remembers menu</p>
       </div>

@@ -9,12 +9,17 @@ const NAME = "Jessica Bull";
 const STUDENT = process.env.NEXT_PUBLIC_STUDENT_NUMBER || "20963232";
 
 const LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/play", label: "Game" },
-  { href: "/todo", label: "Todo" },
-  { href: "/blog", label: "Blog" },
-  { href: "/about", label: "About" },
-];
+    { href: "/", label: "Home" },
+    { href: "/tabs", label: "Tabs" },
+    { href: "/play", label: "Game" },
+    { href: "/todo", label: "Todo" },
+    { href: "/blog", label: "Blog" },
+    { href: "/escape-room", label: "Escape Room" },
+    { href: "/coding-races", label: "Coding Races" },
+    { href: "/court-room", label: "Court Room" },
+    { href: "/about", label: "About" },
+  ];
+  
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -30,8 +35,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-cyan-500/30 bg-black/40 backdrop-blur scanlines">
       <a href="#main" className="skip-link m-2 rounded">Skip to content</a>
 
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
-
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         {/* Student badge + brand */}
         <div className="flex items-center gap-3">
           <span

@@ -1,151 +1,82 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
-
-
+@import "tailwindcss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* -----------------------------------------------------------
-   Pixel theme — scoped to body.pixel (so the rest stays safe)
-   ----------------------------------------------------------- */
-
-/* Optional pixel fonts (headings & UI). Comment out if you prefer system fonts. */
-
-:root { --ring: 2px; }
-
-/* a11y: visible keyboard focus (subtle slate tone) */
-:focus-visible { outline: var(--ring) solid #64748b; outline-offset: 3px; }
-
-/* a11y: skip link */
-.skip-link { position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
-.skip-link:focus {
-  position: static; width:auto; height:auto; padding:.5rem 1rem;
-  background:#fde68a; color:#111; border-radius:.5rem;
+/* ---------------- Theme tokens (LIGHT/DARK) ---------------- */
+:root{
+  /* LIGHT */
+  --bg:#f8fafc;        /* page background */
+  --ink:#0f172a;       /* base text */
+  --card:#1f2937;    /* card layers */
+  --grid:#000000;      /* grid lines */
+  --neon:#22d3ee;      /* accent 1 */
+  --neon-2:#a78bfa;    /* accent 2 */
+}
+.dark{
+  /* DARK */
+  --bg:#030712;
+  --ink:#e5e7eb;
+  --card:#0b0f14cc;
+  --grid:#1f2937;
+  --neon:#22d3ee;
+  --neon-2:#a78bfa;
 }
 
-/* ==================== PIXEL SCOPE ==================== */
-body.pixel {
-  /* calm, coding-friendly palette */
-  --px-bg:        #0e1116;  /* page bg */
-  --px-surface:   #151922;  /* cards/controls */
-  --px-line:      #2b3240;  /* borders */
-  --px-ink:       #e5e7eb;  /* text on dark */
-  --px-muted:     #94a3b8;  /* secondary text */
-  --px-accent:    #74c0fc;  /* link/button accent (calm blue) */
-  --px-accent-2:  #a5b4fc;  /* alt accent (indigo) */
-  --px-shadow:    #0a0c10;  /* pixel drop-shadow */
-
-  color: var(--px-ink);
-  background: var(--px-bg);
-  /* very subtle tiled grid (8px) for game feel */
-  background-image:
-    linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 8px 8px;
-  font-feature-settings: "cv02","cv03","cv04","cv11";
-}
-
-/* Headings: pixel font but balanced sizes */
-body.pixel h1, body.pixel h2, body.pixel h3 {
-  font-family: "Press Start 2P", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-  letter-spacing: .5px;
-}
-body.pixel h1 { font-size: clamp(22px, 3vw, 28px); }
-body.pixel h2 { font-size: clamp(16px, 2vw, 20px); }
-body.pixel h3 { font-size: clamp(14px, 1.6vw, 18px); }
-
-/* Body text: readable coding vibe */
-body.pixel, body.pixel input, body.pixel textarea, body.pixel button {
+/* Monospace "terminal" tone everywhere + theme colors */
+html, body {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+  background: var(--bg);
+  color: var(--ink);
 }
 
-/* Shared pixel-border look (8-bit card) */
-body.pixel .px-card {
-  background: var(--px-surface);
-  border: 2px solid var(--px-line);
-  box-shadow:
-    0 0 0 1px #000 inset,   /* inner crisp line */
-    3px 3px 0 0 var(--px-shadow); /* pixel drop */
-  border-radius: 0; /* flat corners for pixel vibe */
+/* Visible keyboard focus */
+:root { --ring: 2px; }
+:focus-visible { outline: var(--ring) solid var(--neon); outline-offset: 3px; }
+
+/* Skip link for keyboard users */
+.skip-link { position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
+.skip-link:focus { position: static; width:auto; height:auto; padding:.5rem 1rem; background:#fde68a; color:#111; border-radius:.5rem; }
+
+/* -------- Neon background layers respond to theme tokens -------- */
+body::before{
+  content:"";
+  position:fixed; inset:0; z-index:-2;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, var(--neon) 0%, transparent 50%),
+    radial-gradient(1000px 600px at 110% 10%, var(--neon-2) 0%, transparent 50%),
+    var(--bg);
+  filter:saturate(120%) brightness(100%);
+}
+body::after{
+  content:"";
+  position:fixed; inset:0; z-index:-1;
+  background:
+    linear-gradient(transparent 31px, rgba(0,0,0,.03) 32px) 0 0/100% 32px,
+    linear-gradient(90deg, transparent 31px, rgba(0,0,0,.03) 32px) 0 0/32px 100%;
+  mix-blend-mode:overlay;
+  opacity:.6;
 }
 
-/* Make all generic containers with Tailwind borders look pixel-y without changing TSX */
-body.pixel .border {
-  border-width: 2px !important;
-  border-color: var(--px-line) !important;
-  border-radius: 0 !important;
-  box-shadow: 0 0 0 1px #000 inset;
-  background-color: transparent;
+/* Optional scanlines effect; motion-respects users */
+@media (prefers-reduced-motion: no-preference){
+  .scanlines{ position:relative; }
+  .scanlines::before{
+    content:"";
+    pointer-events:none;
+    position:fixed; inset:0; z-index:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.15) 0 2px, transparent 2px 4px);
+    opacity:.25; animation:scan 10s linear infinite;
+  }
+  @keyframes scan{ to{ transform:translateY(4px); } }
 }
 
-/* Buttons: blocky, reserved accent, hover lifts the “pixel” */
-body.pixel button, body.pixel .btn {
-  background: var(--px-surface);
-  color: var(--px-ink);
-  border: 2px solid var(--px-line);
-  border-radius: 0;
-  padding: .5rem .75rem;
-  line-height: 1;
-  box-shadow:
-    0 0 0 1px #000 inset,
-    3px 3px 0 0 var(--px-shadow);
-  transition: transform .05s ease-in-out, box-shadow .05s ease-in-out, background .15s;
+/* Glitch text utility (kept from your original) */
+.glitch{
+  position:relative; display:inline-block; color:white; text-shadow:0 0 10px var(--neon);
 }
-body.pixel button:hover, body.pixel .btn:hover {
-  background: rgba(116,192,252,0.08); /* faint accent */
-  transform: translate(-1px, -1px);
-  box-shadow:
-    0 0 0 1px #000 inset,
-    4px 4px 0 0 var(--px-shadow);
+.glitch::before,.glitch::after{
+  content:attr(data-text); position:absolute; inset:0; mix-blend-mode:screen; pointer-events:none;
 }
-body.pixel button:active, body.pixel .btn:active {
-  transform: translate(0, 0);
-  box-shadow:
-    0 0 0 1px #000 inset,
-    2px 2px 0 0 var(--px-shadow);
-}
-
-/* Inputs / Textareas */
-body.pixel input, body.pixel textarea, body.pixel select {
-  background: #0c1018;
-  color: var(--px-ink);
-  border: 2px solid var(--px-line);
-  border-radius: 0;
-  padding: .55rem .7rem;
-  box-shadow: 0 0 0 1px #000 inset;
-}
-body.pixel input::placeholder, body.pixel textarea::placeholder {
-  color: var(--px-muted);
-}
-
-/* Links: understated coding blue with pixel underline on hover */
-body.pixel a {
-  color: var(--px-accent);
-  text-decoration: none;
-  border-bottom: 2px solid transparent;
-}
-body.pixel a:hover {
-  border-bottom-color: var(--px-accent);
-}
-
-/* Details/Summary (used in previews) */
-body.pixel summary {
-  display: inline-block;
-  cursor: pointer;
-  background: var(--px-surface);
-  border: 2px solid var(--px-line);
-  border-radius: 0;
-  padding: .4rem .6rem;
-  box-shadow: 0 0 0 1px #000 inset, 3px 3px 0 0 var(--px-shadow);
-}
-
-/* Tables/iframes get a crisp frame */
-body.pixel iframe, body.pixel table {
-  border: 2px solid var(--px-line);
-  border-radius: 0;
-  box-shadow: 0 0 0 1px #000 inset, 3px 3px 0 0 var(--px-shadow);
-}
-
-/* Keep Tailwind focus ring but pixel-flavored via color above */
-
-
+.glitch::before{ color:#67e8f9; transform:translateX(.02em); filter:blur(.5px); }
+.glitch::after { color:#c4b5fd; transform:translateX(-.02em); filter:blur(.5px); }

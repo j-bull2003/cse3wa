@@ -1,8 +1,12 @@
 export default function CourtRoom() {
     return (
-      <section>
-        <h1 className="text-2xl font-bold">Court Room</h1>
-        <p className="mt-2">Coming soon. (Placeholder to satisfy Assignment 1 pages requirement.)</p>
+      <section className="section">
+        <h1 className="h1">Court Room</h1>
+        <div className="border card rounded-none dark:border-slate-700">
+          <p className="">
+            Placeholder page for Assignment 1. This will host the Court Room interface later.
+          </p>
+        </div>
       </section>
     );
   }
