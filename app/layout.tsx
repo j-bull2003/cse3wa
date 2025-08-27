@@ -7,7 +7,7 @@ import Footer from "./components/footer";
 import ThemeColorMeta from "./components/theme-color";
 /* App shell */
 export const metadata: Metadata = {
-  title: "CSE3WA — Neon Showcase",
+  title: "CSE3WA",
   description:
     "Cool, hacky, techy Next.js site with tabs, game, todo, blog, and a Moodle-ready tabs generator.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],

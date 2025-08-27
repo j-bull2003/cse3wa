@@ -22,7 +22,7 @@ export default function Header() {
             {STUDENT}
           </span>
           <Link href="/" className="text-sm font-medium text-cyan-100">
-            CSE3WA — Neon Showcase
+            CSE3WA
           </Link>
         </div>
 
