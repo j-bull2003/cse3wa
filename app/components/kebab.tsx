@@ -21,6 +21,7 @@ export default function Kebab({
       aria-label={open ? "Close quick menu" : "Open quick menu"}
       aria-expanded={open}
       aria-controls={controlsId}
+      aria-haspopup="menu"
       onClick={onToggle}
       className={`group relative inline-flex h-9 w-10 items-center justify-center rounded-xl border px-3 py-2 text-sm transition
                   border-cyan-400/40 bg-black/50 text-cyan-100 hover:bg-white/10 ${className}`}
