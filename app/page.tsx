@@ -3,8 +3,10 @@ import Image from "next/image";
 import Tabs from "./components/tabs";
 import Carousel from "./components/carousel";
 import me from "./data/me.jpeg";
-
-
+import blog from "./data/blog.png";
+import tabs from "./data/tabs.png";
+import tic from "./data/tic.png";
+import todo from "./data/todo.png";
 /**
  * Home: hero + highlights (tabs) + quick links + About Jessica section.
  * - Uses your layout helpers: .section, .grid-cards, .card
@@ -176,31 +178,29 @@ export default function Home() {
       body: "Produce a single-file HTML + JS (inline CSS) Tabs block you can paste into Moodle or save as Hello.html.",
       href: "/tabs",
       cta: "Open Generator",
+      imgSrc: tabs
     },
     {
       title: "Play — Tic-Tac-Toe",
       body: "A tiny, crisp mini-game that doubles as a React state walkthrough.",
       href: "/play",
       cta: "Play Now",
+      imgSrc: tic
     },
     {
       title: "Todo",
       body: "Quick, local tasks stored in your browser. Keyboard-friendly and simple.",
       href: "/todo",
       cta: "Open Todo",
+      imgSrc: todo
     },
     {
       title: "Blog",
       body: "Create, search, and read posts — all client-side.",
       href: "/blog",
       cta: "Open Blog",
-    },
-    {
-      title: "Project Pages",
-      body: "Escape Room, Coding Races, and Court Room pages are ready as placeholders for later parts.",
-      href: "/escape-room",
-      cta: "See Project Pages",
-    },
+      imgSrc: blog
+    }
   ]}
 />
 
