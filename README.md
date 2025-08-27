@@ -19,9 +19,8 @@
 - [6. Features](#6-features)
   - [6.1 Themes](#61-themes)
   - [6.2 Navigation](#62-navigation)
-  - [6.3 Homepage Quick Export](#63-homepage-quick-export)
-  - [6.4 Tabs Generator](#64-tabs-generator)
-  - [6.5 Mini Pages](#65-mini-pages)
+  - [6.3 Tabs Generator](#63-tabs-generator)
+  - [6.4 Mini Pages](#64-mini-pages)
 - [7. Accessibility](#7-accessibility)
 - [8. Data Persistence (Cookies & Storage)](#8-data-persistence-cookies--storage)
 - [9. GitHub Hygiene](#9-github-hygiene)
@@ -114,7 +113,6 @@ app/
     theme-color.tsx
     carousel.tsx
     tabs.tsx               # in-site display tabs (not generator)
-    quick-export.tsx       # homepage mini generator (inline only)
   about/page.tsx
   tabs/page.tsx            # Tabs Generator (exports Hello.html)
   play/page.tsx
