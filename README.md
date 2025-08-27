@@ -19,7 +19,6 @@
 - [6. Features](#6-features)
   - [6.1 Themes](#61-themes)
   - [6.2 Navigation](#62-navigation)
-  - [6.3 Homepage Quick Export](#63-homepage-quick-export)
   - [6.4 Tabs Generator](#64-tabs-generator)
   - [6.5 Mini Pages](#65-mini-pages)
 - [7. Accessibility](#7-accessibility)
@@ -55,7 +54,6 @@ This project implements **Part 1** of the assignment brief: a Next.js applicatio
 | Accessibility compliance | Landmarks, roles, a11y tabs, focus styles | ✅ |
 | Cookies: remember menu tab | `last_menu`, tabs cookie in exported file | ✅ |
 | About page: name, student #, video | `app/about/page.tsx` (video placeholder) | ✅ |
-| **Homepage outputs code** | `QuickExport` widget — inline HTML+JS | ✅ |
 | **Tabs Page**: up to 15 tabs (+/−), editable headings & content, localStorage | `app/tabs/page.tsx` | ✅ |
 | **Output**: inline CSS only, no classes; works as `Hello.html` | Copy/Download from Tabs page | ✅ |
 | Extra pages: Escape Room, Coding Races, Court Room | Placeholder pages created | ✅ |
@@ -114,7 +112,6 @@ app/
     theme-color.tsx
     carousel.tsx
     tabs.tsx               # in-site display tabs (not generator)
-    quick-export.tsx       # homepage mini generator (inline only)
   about/page.tsx
   tabs/page.tsx            # Tabs Generator (exports Hello.html)
   play/page.tsx
@@ -198,17 +195,14 @@ Each creates a working **Hello.html** with **no CSS classes**.
 ---
 
 ## 9. GitHub Hygiene
-- **Main** branch + **feature branches**:
-  - `feat/tabs-generator`
-  - `feat/themes-crt`
-  - `feat/nav-menus`
-- **Several commits** with descriptive messages.
-- `.gitignore` excludes `node_modules`.
-- **README** kept up to date.
+- **Main** branch + **feature branches**
 
 **Screenshots (placeholders):**
-- Commits: `docs/screenshots/commits.png`  
-- Branches: `docs/screenshots/branches.png`
+- Commits: `readme/github5.png`  
+- Branches: `readme/github1.png`
+- `readme/github2.png`
+- `readme/github3.png`
+- `readme/github4.png`
 
 ---
 
