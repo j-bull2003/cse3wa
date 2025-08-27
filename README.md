@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CSE3WA — Moodle HTML Generator & Mini App
+> **Student:** Jessica Bull • **ID:** 20963232  
+> **Stack:** Next.js (App Router, TypeScript), Tailwind CSS, next-themes
 
-## Getting Started
+A calm, tech-forward Next.js site that **generates copy-paste HTML + JS** (with **inline CSS only**, **no classes**) ready for **Moodle**.  
+Includes themes (Light/Dark/**CRT Pixel**), accessible navigation with **Hamburger** and **Kebab** menus, a **Tabs generator**, and small feature pages (Game, Todo, Blog).
 
-First, run the development server:
+---
+
+## ✨ Features
+
+- **UI shell**: Header (student # in top-left), Nav, Footer (copyright • name • student # • date)
+- **Themes**: Light • Dark • **CRT Pixel** (green “terminal vibe”)
+- **Navigation**
+  - **Hamburger** (slides in on small screens, CSS transforms)
+  - **Kebab** (⋮ quick menu)
+  - Keyboard & screen-reader friendly (`aria-expanded`, `aria-haspopup="menu"`)
+- **Homepage**
+  - **Quick Export** widget → outputs a **single-file** HTML+JS page (inline styles only)
+  - Carousel (image-ready), highlights, About section
+- **Tabs Generator (/tabs)**
+  - Up to **15 tabs** (+/−), editable headings & content
+  - **localStorage** persistence while authoring
+  - **Output**: complete **Hello.html** (inline CSS only, no `class=`, vanilla JS)
+  - A11y tabs: `role="tablist/tab/tabpanel"`, arrow/Home/End keys, cookies to remember active tab
+- **Small pages**
+  - **Play**: Tic-Tac-Toe (React state walkthrough)
+  - **Todo**: client-side tasks (local persistence)
+  - **Blog**: create/search/read posts client-side
+  - **Escape Room / Coding Races / Court Room**: placeholders for later parts
+- **Accessibility**
+  - “Skip to content”, visible focus rings, semantic roles/labels, color tokens with AA contrast
+- **Cookies**
+  - `last_menu` (last route visited)
+  - `builder_tabs_remember` (Tabs page preference)
+  - `last_active_tab_index` (in exported Hello.html)
+
+---
+
+## 📁 Structure (key files)
+
+app/
+components/
+header.tsx
+navigation.tsx # hamburger + kebab + links
+hamburger.tsx
+kebab.tsx
+theme-providers.tsx
+theme-toggle.tsx
+theme-color.tsx
+carousel.tsx
+tabs.tsx # in-site pretty tabs (not the generator)
+quick-export.tsx # homepage mini generator
+(pages)
+page.tsx # Home
+about/page.tsx
+tabs/page.tsx # Tabs Generator (exports Hello.html)
+play/page.tsx
+todo/page.tsx
+blog/page.tsx
+escape-room/page.tsx
+coding-races/page.tsx
+court-room/page.tsx
+layout.tsx # App shell (Header/Main/Footer)
+globals.css # Tailwind + theme tokens + background layers
+public/
+data/me.jpeg # example image
+slides/... # carousel images
+
+
+---
+
+## 🧪 How to run
 
 ```bash
+# 1) Install
+npm install
+
+# 2) Dev
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# open http://localhost:3000
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# 3) Build & start
+npm run build
+npm start
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Tabs Generator — Using & Exporting
 
-## Learn More
+Visit /tabs.
 
-To learn more about Next.js, take a look at the following resources:
+Use + Add Tab or Remove to set 1, 3, or 5 tabs.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Edit Headings and Content (HTML allowed).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Toggle “Remember active tab (cookie)” as needed.
 
-## Deploy on Vercel
+Click Preview, Copy HTML, or Download Hello.html.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Paste into a blank file named Hello.html and open in any browser.

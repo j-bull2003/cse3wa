@@ -145,19 +145,19 @@ export default function Home() {
 
           {/* Now / Next card */}
           <div className="border card rounded-none dark:border-slate-700">
+            <br></br>
             <h3 className="font-semibold">Now / Next</h3>
             <div className="mt-2 grid grid-cols-1 gap-3">
               <div>
                 <p className="text-xs uppercase tracking-wide ">Now</p>
                 <p className="text-sm">
-                  Finalizing the Tabs generator (inline CSS/JS), and polishing spacing/layout.
+                  Studying at Uni
                 </p>
               </div>
               <div>
                 <p className="text-xs uppercase tracking-wide ">Next</p>
                 <p className="text-sm">
-                  Add a “Components Lab” page (accordion, modal, tooltip, etc.) and,
-                  later, generators for those components in the same Moodle-ready style.
+                  Graduating! (hopefully)
                 </p>
               </div>
             </div>
@@ -166,6 +166,7 @@ export default function Home() {
               <Link href="/tabs" className="btn hover:bg-slate-100/70 dark:hover:bg-slate-800/70">Open Tabs Generator</Link>
               <Link href="/about" className="btn hover:bg-slate-100/70 dark:hover:bg-slate-800/70">More About</Link>
             </div>
+            <br></br>
           </div>
         </div>
       </section>
@@ -212,10 +213,10 @@ export default function Home() {
           { href: "/play", title: "Play", desc: "Tic-Tac-Toe mini-game." },
           { href: "/todo", title: "Todo", desc: "Simple, local, fast." },
           { href: "/blog", title: "Blog", desc: "Create & read posts." },
-          { href: "/escape-room", title: "Escape Room", desc: "Project page (placeholder)." },
-          { href: "/coding-races", title: "Coding Races", desc: "Project page (placeholder)." },
-          { href: "/court-room", title: "Court Room", desc: "Project page (placeholder)." },
-          { href: "/about", title: "About", desc: "Your details, video, references." },
+          { href: "/escape-room", title: "Escape Room", desc: "placeholder." },
+          { href: "/coding-races", title: "Coding Races", desc: "placeholder." },
+          { href: "/court-room", title: "Court Room", desc: "placeholder." },
+          { href: "/about", title: "About", desc: "Your details, video" },
         ].map((c) => (
           <Link
             key={c.href}
