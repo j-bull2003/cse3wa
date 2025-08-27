@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Tabs from "./components/tabs";
 import Carousel from "./components/carousel";
+import me from "./data/me.jpeg";
 
 
 /**
@@ -14,11 +15,10 @@ export default function Home() {
     <section className="section">
       {/* Hero */}
       <header className="text-center space-y-3">
-        <h1 className="h1">CSE3WA — Code Lab</h1>
+        <h1 className="h1">CSE3WA</h1>
         <p className="mx-auto max-w-2xl ">
-          A calm, tech-forward Next.js showcase: a tabs generator for Moodle, a tiny game, a todo,
-          and a simple blog — accessible, keyboard-friendly, and copy-paste ready.
-        </p>
+          Built in Next.js that includes some games and features I made in the subject labs as well as a tabs generator
+        </p><br></br>
       </header>
 
       
@@ -32,7 +32,7 @@ export default function Home() {
               content: (
                 <div className="space-y-2">
                   <p>
-                    Create <strong>copy-paste</strong> HTML + JS (inline CSS only) for Moodle blocks.
+                    Create HTML + JS (inline CSS only) for Moodle blocks/tabs.
                   </p>
                   <Link
                     href="/tabs"
@@ -91,7 +91,7 @@ export default function Home() {
 
             {/* About Jessica (integrated on Home) */}
             <section aria-labelledby="about-jess" className="space-y-4">
-        <h2 id="about-jess" className="h2">About Jessica Bull</h2>
+            <br></br><h2 id="about-jess" className="h2">About Me!</h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Profile / photo card */}
@@ -99,23 +99,14 @@ export default function Home() {
             {/* Optional photo: place /public/jessica.jpg to use this Image.
                 If you don’t have one yet, the fallback initials block will show. */}
             <div className="flex items-center gap-4">
-              {/* If you add /public/jessica.jpg, uncomment the Image below and remove the fallback div. */}
-              {/* 
+              
               <Image
-                src="/jessica.jpg"
+                src={me}
                 alt="Portrait of Jessica Bull"
                 width={88} height={88}
                 className="border dark:border-slate-700"
                 priority
               /> 
-              */}
-              <div
-                aria-hidden
-                className="flex h-20 w-20 items-center justify-center border text-xl font-bold dark:border-slate-700"
-                title="Upload /public/jessica.jpg to replace this."
-              >
-                JB
-              </div>
 
               <div>
                 <p className="text-sm ">Student • CSE3WA</p>
@@ -125,9 +116,7 @@ export default function Home() {
             </div>
 
             <p className="mt-4 text-sm leading-relaxed">
-              Hi! I’m Jessica — I enjoy building clean, accessible UIs and tiny games
-              that double as learning tools. This site demonstrates a Moodle-ready tabs
-              generator and some small feature pages built with Next.js + TypeScript.
+              Hi! I’m Jess — a Computer Science student
             </p>
 
             <div className="mt-4 flex flex-wrap gap-2">
@@ -141,13 +130,15 @@ export default function Home() {
 
           {/* Fun facts card */}
           <div className="border card rounded-none dark:border-slate-700">
+          <br></br>
             <h3 className="font-semibold">Fun facts</h3>
             <ul className="mt-2 list-disc pl-5 text-sm space-y-1 ">
-              <li>Can navigate a keyboard-only UI faster than a mouse 🧭</li>
-              <li>Believes “copy-paste-able” is a valid UX requirement</li>
-              <li>Likes small, composable components over giant frameworks</li>
-              <li>Enjoys pixel art & retro UI, but keeps it accessible</li>
+              <li>Can navigate a keyboard-only UI faster than a mouse</li>
+              <li>Likes to swim and play badminton</li>
+              <li>My favourite drink is coffee, favourite food is soup</li>
+              <li>Loves the look of pixel art</li>
             </ul>
+            <br></br>
           </div>
 
           {/* Now / Next card */}
