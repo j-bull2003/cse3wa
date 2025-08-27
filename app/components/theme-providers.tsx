@@ -1,6 +1,6 @@
 "use client";
-import * as React from "react";
 import { ThemeProvider as NextThemes } from "next-themes";
+import * as React from "react";
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return (
@@ -8,8 +8,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       attribute="class"
       defaultTheme="system"
       enableSystem
-      /* Map theme names → class names on <html> */
-      value={{ light: "light", dark: "dark", crt: "crt" }}
+      value={{ light: "light", dark: "dark", crt: "crt" }} 
     >
       {children}
     </NextThemes>

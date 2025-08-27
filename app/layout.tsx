@@ -17,8 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       {/* Make base text theme-aware (light/dark) */}
-      <body className="min-h-screen text-slate-900 dark:text-slate-100">
-        {/* This toggles `class="dark"` on <html> */}
+      <body className="min-h-screen">
         <ThemeProvider>
         <ThemeColorMeta /> 
           <Header />
