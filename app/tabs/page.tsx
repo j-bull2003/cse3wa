@@ -88,7 +88,7 @@ export default function TabsGenerator() {
   return (
     <section className="section">
       <h1 className="h1">Tabs Generator — Moodle (inline CSS)</h1>
-      <p className="text-slate-400">
+      <p className="">
         Up to 15 tabs. Editable titles & content. State stored in <code>localStorage</code>.
         Output is <strong>single-file</strong> HTML with inline CSS + vanilla JS.
       </p>
@@ -98,7 +98,7 @@ export default function TabsGenerator() {
         <div className="space-y-4 border card rounded-none dark:border-slate-700">
           <div className="flex items-center justify-between">
             <h2 className="h2">Configure</h2>
-            <span className="text-xs text-slate-400">{tabs.length}/{MAX_TABS} tabs</span>
+            <span className="text-xs ">{tabs.length}/{MAX_TABS} tabs</span>
           </div>
 
           <label className="block text-sm font-medium">
@@ -151,7 +151,7 @@ export default function TabsGenerator() {
                   <input
                     value={t.title}
                     onChange={(e) => update(i, { title: e.target.value })}
-                    className="mt-1 field bg-black/40"
+                    className="mt-1 field bg-black/20"
                   />
                 </label>
 
@@ -161,7 +161,7 @@ export default function TabsGenerator() {
                     value={t.content}
                     onChange={(e) => update(i, { content: e.target.value })}
                     rows={5}
-                    className="mt-1 field bg-black/40"
+                    className="mt-1 field bg-black/20"
                   />
                 </label>
 
@@ -197,7 +197,7 @@ export default function TabsGenerator() {
             readOnly
             value={html}
             rows={26}
-            className="h-[560px] w-full border bg-black/60 p-3 font-mono text-xs"
+            className="h-[560px] w-full border bg-black/20 p-3 font-mono text-xs"
             aria-label="Generated HTML output"
           />
 

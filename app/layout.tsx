@@ -4,6 +4,7 @@ import { ThemeProvider } from "./components/theme-providers";
 import Header from "./components/header";
 import Footer from "./components/footer";
 
+import ThemeColorMeta from "./components/theme-color";
 /* App shell */
 export const metadata: Metadata = {
   title: "CSE3WA — Neon Showcase",
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen text-slate-900 dark:text-slate-100">
         {/* This toggles `class="dark"` on <html> */}
         <ThemeProvider>
+        <ThemeColorMeta /> 
           <Header />
           <main id="main" className="mx-auto max-w-6xl px-4 py-8">{children}</main>
           <Footer />
