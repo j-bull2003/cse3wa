@@ -12,7 +12,7 @@ export default function About(){
         <li><strong>Student #:</strong> {STUDENT}</li>
         <li><strong>Subject:</strong> {SUBJECT}</li>
       </ul>
-      <br></br>
+
       <h2>How to use</h2>
       <ol>
         <li>Open <strong>Tabs Generator</strong>.</li>
@@ -21,16 +21,7 @@ export default function About(){
       </ol>
 
       <h2>Video (placeholder)</h2>
-      <br></br>
-      <div className="rounded-2xl border border-white/10">
-        <iframe
-          title="How to use this website"
-          width="100%" height="420"
-          src="https://www.youtube.com/embed"
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      </div>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/zmlx5jKkNgw?si=AluoqZNfteV3rgQ-" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
     </article>
   );
 }
