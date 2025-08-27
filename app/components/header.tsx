@@ -11,8 +11,8 @@ const STUDENT = process.env.NEXT_PUBLIC_STUDENT_NUMBER || "20963232";
 const LINKS = [
     { href: "/", label: "Home" },
     { href: "/tabs", label: "Tabs" },
-    { href: "/play", label: "Game" },
     { href: "/todo", label: "Todo" },
+    { href: "/play", label: "Play" },
     { href: "/blog", label: "Blog" },
     { href: "/escape-room", label: "Escape Room" },
     { href: "/coding-races", label: "Coding Races" },
