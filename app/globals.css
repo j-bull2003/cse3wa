@@ -6,12 +6,12 @@
 /* ---------------- Theme tokens (LIGHT/DARK) ---------------- */
 :root{
   /* LIGHT */
-  --bg:#f8fafc;        /* page background */
+  --bg:#d3dce5;        /* page background */
   --ink:#0f172a;       /* base text */
   --card:#1f2937;    /* card layers */
   --grid:#000000;      /* grid lines */
-  --neon:#22d3ee;      /* accent 1 */
-  --neon-2:#a78bfa;    /* accent 2 */
+  --neon:#0b282d;      /* accent 1 */
+  --neon-2:#0b282d;    /* accent 2 */
 }
 .dark{
   /* DARK */
@@ -22,6 +22,21 @@
   --neon:#22d3ee;
   --neon-2:#a78bfa;
 }
+
+/* --- CRT Pixel theme --- */
+.crt{
+  --bg:#061b0a;            /* deep green/black */
+  --ink:#c8ffb5;           /* phosphor green text */
+  --card:#0a2a12cc;        /* translucent green glass */
+  --grid:#11351d;          /* grid lines */
+  --neon:#56f39a;          /* bright lime accent */
+  --neon-2:#2bd3a0;        /* secondary accent */
+}
+
+/* Optional CRT effects (subtle) */
+.crt body { text-shadow: 0 0 2px rgba(86,243,154,.6); }
+.crt .scanlines::before { opacity:.35; }             /* a touch stronger */
+
 
 /* Monospace "terminal" tone everywhere + theme colors */
 html, body {
