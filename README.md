@@ -24,7 +24,7 @@
 - [7. Accessibility](#7-accessibility)
 - [8. Data Persistence (Cookies & Storage)](#8-data-persistence-cookies--storage)
 - [9. GitHub Hygiene](#9-github-hygiene)
-- [10. Video Demonstration Plan](#10-video-demonstration-plan)
+- [10. Video Demo!](#10-video-demonstration-plan)
 - [11. References & Acknowledgements](#11-references--acknowledgements)
 - [12. License / Academic Note](#12-license--academic-note)
 
@@ -206,11 +206,10 @@ Each creates a working **Hello.html** with **no CSS classes**.
 
 ---
 
-## 10. Video Demonstration Plan
-**Length:** 3–8 minutes.  
-**Covers:** UI (Header/Nav/Footer/About), Themes (Light/Dark/CRT), Menus (Hamburger/Kebab w/ transforms), Tabs Generator ops (up to 15 tabs, edit headings/content, localStorage), **three outputs** (1/3/5 tabs) as working **Hello.html**, GitHub hygiene.
+## 10. Video Demo
 
-> A ready-to-read script is included in the project notes (see `docs/video-script.md` or the script provided in chat).
+https://youtu.be/zmlx5jKkNgw?si=aJWKVOp1PcRrXuCT
+
 
 ---
 
