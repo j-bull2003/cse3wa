@@ -1,28 +1,24 @@
 generator client { provider = "prisma-client-js" }
 
-
 datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
 
-
 model CourtSession {
-id String @id @default(uuid())
-createdAt DateTime @default(now())
-startedAt BigInt?
-minutesPlanned Int
-running Boolean
-tasks Json
-messages Json
-meta Json
+  id             String   @id @default(uuid())
+  createdAt      DateTime @default(now())
+  startedAt      BigInt?
+  minutesPlanned Int
+  running        Boolean
+  tasks          Json
+  messages       Json
+  meta           Json
 }
-
 
 model User {
-id String @id @default(uuid())
-name String
-lineStatus LineStatus
-createdAt DateTime @default(now())
-updatedAt DateTime @updatedAt
+  id         String     @id @default(uuid())
+  name       String
+  lineStatus LineStatus
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
-
 
 enum LineStatus { online, offline }
