@@ -231,3 +231,19 @@ Coursework for **CSE3WA** at **La Trobe University**.
 Not for commercial use without permission. Please credit the author when referencing design or code.
 
 ---
+
+
+
+
+# Bring up infra
+docker compose up -d postgres jaegertracing zipkin-all-in-one otel-collector prometheus
+
+# Prisma
+npx prisma generate
+npx prisma migrate deploy
+
+# App
+docker compose up -d --build web
+
+# Tests (and watch traces in Jaeger/Zipkin, metrics in Prometheus)
+BASE_URL=http://localhost npx playwright test
