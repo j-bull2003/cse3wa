@@ -255,3 +255,5 @@ DATABASE_URL="postgresql://postgres:postgres@localhost:5432/appdb?schema=public"
 npx prisma db push
 
 npx prisma studio 
+
+NODE_ENV=test npx playwright test

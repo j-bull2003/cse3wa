@@ -35,7 +35,10 @@ interface User {
 
 /* -------------------- Constants -------------------- */
 const MS = { s: 1000, min: 60 * 1000 }
-const AMBIENT_MIN = 20 * MS.s, AMBIENT_MAX = 30 * MS.s
+const IS_TEST = process.env.NODE_ENV === 'test'
+
+// Helper to speed up time in test mode
+const fast = (normalMs: number) => IS_TEST ? Math.max(500, normalMs / 60) : normalMs
 
 const TASK_RULES: TaskRule[] = [
   {
@@ -43,45 +46,45 @@ const TASK_RULES: TaskRule[] = [
     title: 'Fix alt in img1',
     description: 'Add meaningful alt text for accessibility compliance.',
     lawOnBreach: 'Disability Discrimination Act / WCAG 1.1.1',
-    initialDelayMs: 10 * MS.s,
-    urgentDelayMs: 2 * MS.min,
-    courtDelayMs: 4 * MS.min
+    initialDelayMs: fast(10 * MS.s),
+    urgentDelayMs: fast(2 * MS.min),
+    courtDelayMs: fast(4 * MS.min)
   },
   {
     key: 'fixInputValidation',
     title: 'Fix input validation',
     description: 'Validate inputs properly (client & server).',
     lawOnBreach: 'Laws of Tort — negligence after known vulnerability.',
-    initialDelayMs: 25 * MS.s,
-    urgentDelayMs: 2 * MS.min,
-    courtDelayMs: 4 * MS.min
+    initialDelayMs: fast(25 * MS.s),
+    urgentDelayMs: fast(2 * MS.min),
+    courtDelayMs: fast(4 * MS.min)
   },
   {
     key: 'changeTitleColour',
     title: 'Change title colour to red',
     description: 'Agile request to adjust the title UI colour.',
     lawOnBreach: '—',
-    initialDelayMs: 35 * MS.s,
-    urgentDelayMs: 2 * MS.min,
-    courtDelayMs: 4 * MS.min
+    initialDelayMs: fast(35 * MS.s),
+    urgentDelayMs: fast(2 * MS.min),
+    courtDelayMs: fast(4 * MS.min)
   },
   {
     key: 'fixUserLogin',
     title: 'Fix user login',
     description: 'Implement login flow; otherwise no one can access your app.',
     lawOnBreach: 'Bankruptcy — no users, no revenue.',
-    initialDelayMs: 50 * MS.s,
-    urgentDelayMs: 2 * MS.min,
-    courtDelayMs: 4 * MS.min
+    initialDelayMs: fast(50 * MS.s),
+    urgentDelayMs: fast(2 * MS.min),
+    courtDelayMs: fast(4 * MS.min)
   },
   {
     key: 'fixSecureDatabase',
     title: 'Secure database connection',
     description: 'Prevent leaks by securing DB credentials and encryption.',
     lawOnBreach: 'Laws of Tort — data breach negligence.',
-    initialDelayMs: 65 * MS.s,
-    urgentDelayMs: 2 * MS.min,
-    courtDelayMs: 4 * MS.min
+    initialDelayMs: fast(65 * MS.s),
+    urgentDelayMs: fast(2 * MS.min),
+    courtDelayMs: fast(4 * MS.min)
   },
 ]
 
