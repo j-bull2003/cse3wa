@@ -19,8 +19,6 @@ export default function About(){
         <li>Configure panels, then <strong>Copy</strong> (or <strong>Download</strong>).</li>
         <li>Paste into a blank <code>Hello.html</code> or Moodle HTML block.</li>
       </ol>
-
-      <h2>Video (placeholder)</h2>
       <iframe width="560" height="315" src="https://www.youtube.com/embed/zmlx5jKkNgw?si=AluoqZNfteV3rgQ-" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
     </article>
   );
