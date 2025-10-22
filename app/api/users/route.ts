@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '../../lib/primsa';
+import { prisma } from '../../lib/prisma';
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization' }
 export async function OPTIONS() { return new NextResponse(null, { status: 204, headers: cors }) }
+function safeJson(data: any) {
+  return JSON.parse(
+    JSON.stringify(data, (_, value) =>
+      typeof value === 'bigint' ? value.toString() : value
+    )
+  )
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -22,7 +29,7 @@ export async function POST(req: NextRequest) {
     const { name, lineStatus } = await req.json()
     if (!name || !lineStatus) return new NextResponse('Missing name or lineStatus', { status: 400, headers: cors })
     const created = await prisma.user.create({ data: { name, lineStatus } })
-    return NextResponse.json(created, { status: 201, headers: cors })
+    return NextResponse.json(safeJson(created), { status: 201, headers: cors })
   } catch (e) { console.error(e); return new NextResponse('Invalid body', { status: 400, headers: cors }) }
 }
 
