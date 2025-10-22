@@ -233,7 +233,7 @@ Not for commercial use without permission. Please credit the author when referen
 ---
 
 
-
+npx prisma generate
 
 # Bring up infra
 docker compose up -d postgres jaegertracing zipkin-all-in-one otel-collector prometheus
@@ -247,3 +247,11 @@ docker compose up -d --build web
 
 # Tests (and watch traces in Jaeger/Zipkin, metrics in Prometheus)
 BASE_URL=http://localhost npx playwright test
+
+docker run --name pg -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=appdb -p 5432:5432 -d postgres:16
+
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/appdb?schema=public"
+
+npx prisma db push
+
+npx prisma studio 
