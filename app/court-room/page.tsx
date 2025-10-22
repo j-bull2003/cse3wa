@@ -2,7 +2,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import clsx from 'clsx'
 
-type Sender = 'Boss' | 'Family' | 'Agile'
+/* -------------------- Types -------------------- */
+type Sender = 'Boss' | 'Family' | 'Agile' | 'Court' | 'System'
 type TaskKey = 'fixAlt' | 'fixInputValidation' | 'fixUserLogin' | 'fixSecureDatabase' | 'changeTitleColour'
 
 interface TaskRule {
@@ -14,318 +15,362 @@ interface TaskRule {
   urgentDelayMs: number
   courtDelayMs: number
 }
-interface TaskState { key: TaskKey; status: 'pending' | 'resolved' | 'urgent' | 'court'; timestamps: { initial?: number; urgent?: number; court?: number } }
-interface Message { id: string; at: number; from: Sender | 'System'; text: string; severity?: 'info' | 'warning' | 'urgent' }
+interface TaskState {
+  key: TaskKey
+  status: 'pending' | 'resolved' | 'urgent' | 'court'
+  timestamps: { initial?: number; urgent?: number; court?: number }
+}
+interface Message {
+  id: string
+  at: number
+  from: Sender
+  text: string
+  severity?: 'info' | 'warning' | 'urgent'
+}
+interface User {
+  id: string
+  name: string
+  email: string
+}
 
+/* -------------------- Constants -------------------- */
 const MS = { s: 1000, min: 60 * 1000 }
 const AMBIENT_MIN = 20 * MS.s, AMBIENT_MAX = 30 * MS.s
 
 const TASK_RULES: TaskRule[] = [
-  { key: 'fixAlt', title: 'fix alt in img1', description: 'Add meaningful alt text to comply with WCAG.', lawOnBreach: 'Disability Discrimination Act / WCAG 1.1.1', initialDelayMs: 10*MS.s, urgentDelayMs: 2*MS.min, courtDelayMs: 4*MS.min },
-  { key: 'fixInputValidation', title: 'fix input validation', description: 'Validate email/password properly (client & server).', lawOnBreach: 'Laws of Tort (hacked; known issue)', initialDelayMs: 25*MS.s, urgentDelayMs: 2*MS.min, courtDelayMs: 4*MS.min },
-  { key: 'changeTitleColour', title: 'fix change Title colour to Red', description: 'Agile request to make title red.', lawOnBreach: '—', initialDelayMs: 35*MS.s, urgentDelayMs: 2*MS.min, courtDelayMs: 4*MS.min },
-  { key: 'fixUserLogin', title: 'Fix User login', description: 'Implement login flow; otherwise no one can use the app.', lawOnBreach: 'Bankruptcy scenario (no revenue)', initialDelayMs: 50*MS.s, urgentDelayMs: 2*MS.min, courtDelayMs: 4*MS.min },
-  { key: 'fixSecureDatabase', title: 'Fix Secure Database', description: 'Secure DB connection & secrets; avoid breaches.', lawOnBreach: 'Laws of Tort (data breach)', initialDelayMs: 65*MS.s, urgentDelayMs: 2*MS.min, courtDelayMs: 4*MS.min },
+  {
+    key: 'fixAlt',
+    title: 'Fix alt in img1',
+    description: 'Add meaningful alt text for accessibility compliance.',
+    lawOnBreach: 'Disability Discrimination Act / WCAG 1.1.1',
+    initialDelayMs: 10 * MS.s,
+    urgentDelayMs: 2 * MS.min,
+    courtDelayMs: 4 * MS.min
+  },
+  {
+    key: 'fixInputValidation',
+    title: 'Fix input validation',
+    description: 'Validate inputs properly (client & server).',
+    lawOnBreach: 'Laws of Tort — negligence after known vulnerability.',
+    initialDelayMs: 25 * MS.s,
+    urgentDelayMs: 2 * MS.min,
+    courtDelayMs: 4 * MS.min
+  },
+  {
+    key: 'changeTitleColour',
+    title: 'Change title colour to red',
+    description: 'Agile request to adjust the title UI colour.',
+    lawOnBreach: '—',
+    initialDelayMs: 35 * MS.s,
+    urgentDelayMs: 2 * MS.min,
+    courtDelayMs: 4 * MS.min
+  },
+  {
+    key: 'fixUserLogin',
+    title: 'Fix user login',
+    description: 'Implement login flow; otherwise no one can access your app.',
+    lawOnBreach: 'Bankruptcy — no users, no revenue.',
+    initialDelayMs: 50 * MS.s,
+    urgentDelayMs: 2 * MS.min,
+    courtDelayMs: 4 * MS.min
+  },
+  {
+    key: 'fixSecureDatabase',
+    title: 'Secure database connection',
+    description: 'Prevent leaks by securing DB credentials and encryption.',
+    lawOnBreach: 'Laws of Tort — data breach negligence.',
+    initialDelayMs: 65 * MS.s,
+    urgentDelayMs: 2 * MS.min,
+    courtDelayMs: 4 * MS.min
+  },
 ]
 
-const SENDER_LINES: Record<Sender, string[]> = {
-  Boss: ['Are you done with sprint 1?', 'ETA on title colour?', 'Stand-up in 5.'],
-  Family: ['Can you pick up the kids after work?', 'Don’t forget dinner tonight!'],
-  Agile: ['“Change Title colour to Red” still open.', 'Reminder: add alt to img1.', 'Reminder: validate inputs.'],
+const SENDER_LINES = {
+  Boss: ['Are you done with sprint 1?', 'Stand-up in 5!', 'Client wants updates today.'],
+  Family: ['Can you pick up the kids?', 'Dinner tonight?', 'We miss you!'],
+  Agile: ['Change title colour to red.', 'Reminder: fix alt in img1.', 'Validate inputs please.']
+}
+
+const ICONS: Record<Sender, string> = {
+  Boss: '💼',
+  Family: '🏠',
+  Agile: '🧑‍💻',
+  Court: '⚖️',
+  System: '🖥️'
 }
 
 const rand = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min
 const now = () => Date.now()
-const prettyTime = (ms: number) => new Date(ms).toLocaleTimeString()
+const pretty = (t: number) => new Date(t).toLocaleTimeString()
 
-export default function CourtRoom() {
-  const [minutes, setMinutes] = useState<number>(5)
+/* -------------------- Main Component -------------------- */
+export default function CourtRoomGameWithLogin() {
+  /* ---------- Auth ---------- */
+  const [user, setUser] = useState<User | null>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('courtUser')
+      return stored ? JSON.parse(stored) : null
+    }
+    return null
+  })
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [registerMode, setRegisterMode] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleLogin = async () => {
+    if (!email || !password) return setError('Please enter both fields.')
+    setError('')
+    // Mock authentication
+    const fakeUser = { id: crypto.randomUUID(), name: email.split('@')[0], email }
+    localStorage.setItem('courtUser', JSON.stringify(fakeUser))
+    setUser(fakeUser)
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('courtUser')
+    setUser(null)
+  }
+
+  /* ---------- Game State ---------- */
+  const [started, setStarted] = useState(false)
+  const [practiceMode, setPracticeMode] = useState(false)
+  const [minutes, setMinutes] = useState(5)
+  const [timeLeft, setTimeLeft] = useState(0)
   const [running, setRunning] = useState(false)
-  const [startedAt, setStartedAt] = useState<number | null>(null)
-
   const [messages, setMessages] = useState<Message[]>([])
   const [tasks, setTasks] = useState<Record<TaskKey, TaskState>>(
-    Object.fromEntries(TASK_RULES.map(r => [r.key, { key: r.key, status: 'pending', timestamps: {} }])) as Record<TaskKey, TaskState>
+    Object.fromEntries(TASK_RULES.map(t => [t.key, { key: t.key, status: 'pending', timestamps: {} }])) as Record<TaskKey, TaskState>
   )
-  const [showCourt, setShowCourt] = useState<null | { task: TaskRule; when: number }>(null)
-
-  // “Fixes” state
-  const [imgAlt, setImgAlt] = useState('')
-  const [titleIsRed, setTitleIsRed] = useState(false)
-  const [email, setEmail] = useState('')
-  const [pass, setPass] = useState('')
-  const emailOk = /.+@.+\..+/.test(email)
-  const passOk = pass.length >= 8
-  const [loginVerified, setLoginVerified] = useState(false)
-  const [dbSecured, setDbSecured] = useState(false)
-
-  // Save to DB
+  const [showCourt, setShowCourt] = useState<TaskRule | null>(null)
   const [saving, setSaving] = useState(false)
-  const [saveStatus, setSaveStatus] = useState('')
+  const [toast, setToast] = useState<string | null>(null)
+
   const liveRef = useRef<HTMLDivElement>(null)
-
-  const pushMessage = (m: Omit<Message, 'id' | 'at'>) => {
-    const item: Message = { id: crypto.randomUUID(), at: now(), ...m }
-    setMessages(prev => [item, ...prev].slice(0, 100))
-    if (liveRef.current) liveRef.current.textContent = `${m.from}: ${m.text}`
-  }
-  const pushSystem = (text: string, severity: Message['severity']='info') => pushMessage({ from: 'System', text, severity })
-
-  // Timer
-  const start = () => { setRunning(true); setStartedAt(now()); pushSystem(`Timer started for ${minutes}m.`) }
-  const pause = () => { setRunning(false); pushSystem('Timer paused.') }
-  const reset = () => {
-    setRunning(false); setStartedAt(null); setMessages([])
-    setTasks(Object.fromEntries(TASK_RULES.map(r => [r.key, { key: r.key, status: 'pending', timestamps: {} }])) as Record<TaskKey, TaskState>)
-    setShowCourt(null); setImgAlt(''); setTitleIsRed(false); setEmail(''); setPass(''); setLoginVerified(false); setDbSecured(false)
-    pushSystem('Simulation reset.')
+  const pushMessage = (msg: Omit<Message, 'id' | 'at'>) => {
+    const item: Message = { id: crypto.randomUUID(), at: now(), ...msg }
+    setMessages(prev => [item, ...prev])
+    if (liveRef.current) liveRef.current.textContent = `${msg.from}: ${msg.text}`
   }
 
-  // 20–30s ambient messages
+  /* ---------- Timer ---------- */
+  const start = () => {
+    setStarted(true)
+    setRunning(true)
+    setTimeLeft(minutes * 60)
+    pushMessage({ from: 'System', text: `Timer started for ${minutes} minutes.` })
+  }
+
   useEffect(() => {
     if (!running) return
-    let cancelled = false
-    const plan = () => {
-      const delay = rand(AMBIENT_MIN, AMBIENT_MAX)
+    const interval = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) { clearInterval(interval); setRunning(false); pushMessage({ from: 'System', text: 'Time’s up!' }); return 0 }
+        return prev - 1
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [running])
+
+  /* ---------- Ambient Messages ---------- */
+  useEffect(() => {
+    if (!running) return
+    let active = true
+    const loop = () => {
+      const delay = rand(20000, 30000)
       const id = setTimeout(() => {
-        if (cancelled) return
-        const who: Sender = (['Boss','Family','Agile'] as Sender[])[rand(0,2)]
-        const line = SENDER_LINES[who][rand(0, SENDER_LINES[who].length - 1)]
-        pushMessage({ from: who, text: line })
-        plan()
+        if (!active) return
+        const senders: Sender[] = ['Boss', 'Family', 'Agile']
+        const who = senders[rand(0, senders.length - 1)]
+        const lines = SENDER_LINES[who as keyof typeof SENDER_LINES]
+        const text = lines[rand(0, lines.length - 1)]
+        pushMessage({ from: who, text })
+        loop()
       }, delay)
       return () => clearTimeout(id)
     }
-    const cleanup = plan(); return () => { cancelled = true; cleanup && cleanup() }
+    const cleanup = loop()
+    return () => { active = false; cleanup && cleanup() }
   }, [running])
 
-  // Escalation (t=~0 reminder, +2m URGENT, +2m COURT)
+  /* ---------- Escalation Logic ---------- */
   useEffect(() => {
     if (!running) return
-    const ids: number[] = []
+    const timers: number[] = []
     TASK_RULES.forEach(rule => {
-      ids.push(window.setTimeout(() => {
-        setTasks(prev => {
-          const t = prev[rule.key]; if (!t || t.status !== 'pending') return prev
-          pushMessage({ from: 'Agile', text: rule.title, severity: 'warning' })
-          return { ...prev, [rule.key]: { ...t, timestamps: { ...t.timestamps, initial: now() } } }
-        })
-      }, rule.initialDelayMs))
-      ids.push(window.setTimeout(() => {
-        setTasks(prev => {
-          const t = prev[rule.key]; if (!t || t.status !== 'pending') return prev
-          pushMessage({ from: 'Agile', text: `URGENT: ${rule.title}`, severity: 'urgent' })
-          return { ...prev, [rule.key]: { ...t, status: 'urgent', timestamps: { ...t.timestamps, urgent: now() } } }
-        })
-      }, rule.urgentDelayMs))
-      ids.push(window.setTimeout(() => {
-        setTasks(prev => {
-          const t = prev[rule.key]; if (!t || (t.status !== 'pending' && t.status !== 'urgent')) return prev
-          const breached =
-            rule.key === 'fixAlt' ? 'You ignored accessible alt text.' :
-            rule.key === 'fixInputValidation' ? 'You ignored input validation; you were hacked.' :
-            rule.key === 'fixSecureDatabase' ? 'You left the DB insecure; data breach occurred.' :
-            rule.key === 'fixUserLogin' ? 'No login; you went bankrupt.' :
-            'Ignored product requirement.'
-          pushMessage({ from: 'System', text: `⚖️ COURT: ${breached} (${rule.lawOnBreach}).`, severity: 'urgent' })
-          setShowCourt({ task: rule, when: now() })
-          return { ...prev, [rule.key]: { ...t, status: 'court', timestamps: { ...t.timestamps, court: now() } } }
-        })
-      }, rule.courtDelayMs))
+      const schedule = (delay: number, fn: () => void) => timers.push(window.setTimeout(fn, delay))
+      schedule(rule.initialDelayMs, () => pushMessage({ from: 'Agile', text: rule.title, severity: 'warning' }))
+      schedule(rule.urgentDelayMs, () => escalate(rule))
+      schedule(rule.courtDelayMs, () => bringToCourt(rule))
     })
-    return () => ids.forEach(id => clearTimeout(id))
-  }, [running])
+    return () => timers.forEach(clearTimeout)
+  }, [running, practiceMode])
 
-  const resolveTask = (key: TaskKey) => setTasks(prev => {
-    const t = prev[key]; if (!t || t.status === 'resolved') return prev
-    pushSystem(`Task resolved: ${TASK_RULES.find(x => x.key === key)?.title}`)
-    return { ...prev, [key]: { ...t, status: 'resolved' } }
-  })
+  const escalate = (rule: TaskRule) => {
+    setTasks(prev => {
+      const t = prev[rule.key]
+      if (t.status !== 'pending') return prev
+      pushMessage({ from: 'Agile', text: `URGENT: ${rule.title}`, severity: 'urgent' })
+      return { ...prev, [rule.key]: { ...t, status: 'urgent' } }
+    })
+  }
 
-  const buildPayload = () => ({ startedAt, minutesPlanned: minutes, running, tasks, messages: messages.slice(0, 50), meta: { titleIsRed, loginVerified, dbSecured } })
+  const bringToCourt = (rule: TaskRule) => {
+    if (practiceMode) return
+    setTasks(prev => {
+      const t = prev[rule.key]
+      if (t.status === 'resolved') return prev
+      pushMessage({ from: 'Court', text: `⚖️ ${rule.title} — Fined under ${rule.lawOnBreach}`, severity: 'urgent' })
+      setShowCourt(rule)
+      return { ...prev, [rule.key]: { ...t, status: 'court' } }
+    })
+  }
+
+  const resolveTask = (key: TaskKey) =>
+    setTasks(prev => ({ ...prev, [key]: { ...prev[key], status: 'resolved' } }))
+
+  /* ---------- Save Session ---------- */
   const saveSession = async () => {
+    if (!user) return alert('Please log in first.')
+    setSaving(true)
     try {
-      setSaving(true); setSaveStatus('')
-      const res = await fetch('/api/court-sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(buildPayload()) })
-      if (!res.ok) throw new Error(`Save failed (${res.status})`)
-      const data = await res.json(); setSaveStatus(`Saved ✓ (id: ${data.id?.slice?.(0,8) ?? 'ok'})`); pushSystem('Session saved to database.')
-    } catch (e: any) { setSaveStatus(e?.message ?? 'Save failed'); pushSystem('Save failed — check API logs.', 'urgent') }
-    finally { setSaving(false) }
+      await fetch('/api/court-sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, tasks, messages, practiceMode, minutes })
+      })
+      setToast('✅ Saved to DB!')
+    } catch {
+      setToast('⚠️ Save failed — check API.')
+    } finally {
+      setSaving(false)
+      setTimeout(() => setToast(null), 3000)
+    }
   }
 
-  const verifyLogin = async () => {
-    try {
-      const created = await fetch('/api/users', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'test-user', lineStatus: 'online' }) })
-      if (!created.ok) throw new Error('Create user failed')
-      const list = await fetch('/api/users')
-      if (!list.ok) throw new Error('List users failed')
-      setLoginVerified(true)
-      resolveTask('fixUserLogin')
-    } catch { pushSystem('Login verification failed.', 'urgent') }
-  }
-
-  const verifyDbSecurity = async () => {
-    try {
-      const res = await fetch('/api/health/db')
-      const data = await res.json()
-      if (res.ok && data.connected && data.secure) { setDbSecured(true); resolveTask('fixSecureDatabase') }
-      else pushSystem('DB not secure/connected. Check ENV & Docker.', 'urgent')
-    } catch { pushSystem('DB health endpoint failed.', 'urgent') }
-  }
-
-  const totalOpen = Object.values(tasks).filter(t => t.status !== 'resolved').length
-
-  return (
-    <section className={clsx('relative min-h-[calc(100dvh-4rem)] w-full overflow-hidden', 'text-slate-900 dark:text-slate-100')}>
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-cover bg-center opacity-25" style={{ backgroundImage: "url('/courtroom.jpg')" }} />
-      <div aria-hidden className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 -z-10 w-[1100px] h-[380px] bg-no-repeat bg-contain opacity-70" style={{ backgroundImage: "url('/work-desk.png')" }} />
-
-      {/* Ethics Survey Banner */}
-      <div className="w-full bg-amber-50 border-b border-amber-200 text-amber-900">
-        <div className="section px-4 py-2 text-sm">
-          Please request feedback from <strong>two family</strong>, <strong>two friends</strong>, and <strong>two industry</strong> contacts and ask them to complete the ethical survey:{' '}
-          <a className="underline" href="https://redcap.latrobe.edu.au/redcap/surveys/?s=PPEKFTMPXF4KKEFY" target="_blank" rel="noreferrer">Ethical Survey (REDCap)</a>
-        </div>
+  /* ---------- Login Screen ---------- */
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-b from-slate-100 to-slate-200 text-center p-6">
+        <h1 className="text-3xl font-bold mb-2">⚖️ Court Room Login</h1>
+        <p className="mb-4 text-slate-600 text-sm">Log in to access the simulation.</p>
+        {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
+        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className="rounded border px-2 py-1 mb-2 w-64" />
+        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className="rounded border px-2 py-1 mb-3 w-64" />
+        <button onClick={handleLogin} className="bg-slate-900 text-white rounded px-4 py-2">{registerMode ? 'Register' : 'Login'}</button>
+        <p className="text-xs text-slate-500 mt-2">
+          {registerMode ? 'Already have an account?' : "Don't have an account?"}{' '}
+          <button onClick={() => setRegisterMode(!registerMode)} className="underline">
+            {registerMode ? 'Login' : 'Register'}
+          </button>
+        </p>
       </div>
+    )
+  }
 
-      <div className="section px-4 py-6 sm:px-8">
-        <h1 className={clsx('h1 mb-2', titleIsRed && 'text-red-600')}>Court Room</h1>
-        <p className="mb-4 text-sm opacity-80">Debug under pressure. Messages every 20–30s; 2m → urgent; +2m → court & fines.</p>
+  /* ---------- Game Start Screen ---------- */
+  if (!started) {
+    return (
+      <section className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-slate-200 text-center p-6">
+        <h1 className="text-3xl font-bold mb-3">Welcome, {user.name}! ⚖️</h1>
+        <p className="max-w-md mb-4 text-slate-700 text-sm">
+          Debug your code under pressure. You’ll receive distractions from your boss, family, and agile team. Ignore critical bugs, and the court will summon you!
+        </p>
+        <label className="flex flex-col items-center gap-1 mb-3 text-sm">
+          Timer (minutes):
+          <input type="number" min={1} max={60} value={minutes} onChange={e => setMinutes(Number(e.target.value))} className="rounded border px-2 py-1 w-20 text-center" />
+        </label>
+        <label className="flex items-center justify-center gap-2 mb-4 text-sm">
+          <input type="checkbox" checked={practiceMode} onChange={e => setPracticeMode(e.target.checked)} />
+          Practice Mode (no fines)
+        </label>
+        <button onClick={start} className="bg-slate-900 text-white rounded px-4 py-2 text-lg">Start Simulation</button>
+        <button onClick={handleLogout} className="mt-3 text-xs underline text-slate-500">Logout</button>
+      </section>
+    )
+  }
 
-        <div className="grid gap-4 md:grid-cols-3">
-          {/* Timer */}
-          <div className="rounded-lg border dark:border-slate-700 p-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur">
-            <h2 className="font-semibold mb-2">Timer</h2>
-            <label className="block text-sm mb-2" htmlFor="minutes">Minutes</label>
-            <input id="minutes" type="number" min={1} max={60} className="w-24 rounded border px-2 py-1 text-slate-900" value={minutes} onChange={e => setMinutes(Math.max(1, Number(e.target.value || 1)))} />
-            <div className="mt-3 flex gap-2">
-              <button className="btn" onClick={start} disabled={running}>Start</button>
-              <button className="btn" onClick={pause} disabled={!running}>Pause</button>
-              <button className="btn-outline" onClick={reset}>Reset</button>
-            </div>
-            <p className="mt-2 text-xs opacity-70">Boss/Family/Agile ping you while you work.</p>
-          </div>
+  /* ---------- Main Game ---------- */
+  return (
+    <main className="relative min-h-screen text-slate-900">
+      <div aria-hidden className="absolute inset-0 -z-10 bg-cover bg-center opacity-25" style={{ backgroundImage: "url('/courtroom.jpg')" }} />
+      <div aria-hidden className="absolute bottom-0 left-1/2 -translate-x-1/2 -z-10 w-[1200px] h-[400px] bg-no-repeat bg-contain opacity-60" style={{ backgroundImage: "url('/work-desk.png')" }} />
 
-          {/* Tasks */}
-          <div className="rounded-lg border dark:border-slate-700 p-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur">
-            <h2 className="font-semibold mb-2">Tasks ({totalOpen} open)</h2>
-            <ul className="space-y-2">
-              {TASK_RULES.map(rule => {
-                const st = tasks[rule.key]
-                return (
-                  <li key={rule.key} className="flex items-center justify-between gap-3">
-                    <div>
-                      <div className="font-medium">{rule.title}</div>
-                      <div className="text-xs opacity-70">{rule.description}</div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className={clsx('inline-flex items-center rounded px-2 py-0.5 text-xs',
-                        st?.status === 'resolved' && 'bg-emerald-600/15 text-emerald-700 dark:text-emerald-300',
-                        st?.status === 'urgent' && 'bg-amber-600/15 text-amber-700 dark:text-amber-300',
-                        st?.status === 'court' && 'bg-red-600/15 text-red-700 dark:text-red-300',
-                        (!st || st.status === 'pending') && 'bg-slate-500/15 text-slate-700 dark:text-slate-300'
-                      )} aria-label={`Status: ${st?.status ?? 'pending'}`}>{st?.status ?? 'pending'}</span>
-                      <button className="btn-xs" onClick={() => resolveTask(rule.key)} disabled={st?.status === 'resolved'}>Mark fixed</button>
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="rounded-lg border dark:border-slate-700 p-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur">
-            <h2 className="font-semibold mb-2">Quick Actions</h2>
-            <div className="space-y-3 text-sm">
-              <div className="rounded border p-3">
-                <div className="mb-2 font-medium">Fix image alt</div>
-                <img src="/sample-product.jpg" alt={imgAlt || ''} className="h-24 w-24 rounded object-cover border" />
-                <div className="mt-2 flex items-center gap-2">
-                  <input aria-label="Alt text" className="rounded border px-2 py-1 text-slate-900" placeholder="Describe the image…" value={imgAlt} onChange={e => setImgAlt(e.target.value)} />
-                  <button className="btn-xs" onClick={() => imgAlt.trim() && resolveTask('fixAlt')} disabled={!imgAlt.trim()}>Save alt</button>
-                </div>
-                {!imgAlt && <p className="mt-1 text-xs text-amber-700">Missing alt → a11y failure</p>}
-              </div>
-
-              <div className="rounded border p-3">
-
-                <div className="mb-2 font-medium">Change Title colour to Red</div>
-                <button className="btn-xs" onClick={() => { setTitleIsRed(true); resolveTask('changeTitleColour') }}>Make title red</button>
-              </div>
-
-              <div className="rounded border p-3">
-                <div className="mb-2 font-medium">Fix input validation</div>
-                <label className="block text-xs" htmlFor="email">Email</label>
-                <input id="email" type="email" className={clsx('mb-1 w-full rounded border px-2 py-1 text-slate-900', !emailOk && 'border-red-500')} value={email} onChange={e => setEmail(e.target.value)} />
-                <label className="block text-xs" htmlFor="pass">Password</label>
-                <input id="pass" type="password" className={clsx('w-full rounded border px-2 py-1 text-slate-900', !passOk && 'border-red-500')} value={pass} onChange={e => setPass(e.target.value)} />
-                <button className="btn-xs mt-2" onClick={() => emailOk && passOk && resolveTask('fixInputValidation')} disabled={!(emailOk && passOk)}>Validate</button>
-              </div>
-
-              <div className="rounded border p-3">
-                <div className="mb-2 font-medium">Implement User Login (verify API)</div>
-                <button className="btn-xs" onClick={verifyLogin}>Verify via /api/users</button>
-                {loginVerified && <p className="mt-1 text-xs text-emerald-700">Users API working ✔</p>}
-              </div>
-
-              <div className="rounded border p-3">
-                <div className="mb-2 font-medium">Secure Database (verify)</div>
-                <button className="btn-xs" onClick={verifyDbSecurity}>Check /api/health/db</button>
-                {dbSecured && <p className="mt-1 text-xs text-emerald-700">DB connected & using postgres URL ✔</p>}
-              </div>
-            </div>
-          </div>
+      <header className="flex justify-between items-center p-4 border-b bg-white/70 backdrop-blur">
+        <h1 className="text-lg font-semibold">Court Room Simulation</h1>
+        <div className="flex gap-4 items-center text-sm">
+          <span>👋 {user.name}</span>
+          <span>Time: {Math.floor(timeLeft/60)}:{(timeLeft%60).toString().padStart(2,'0')}</span>
+          <button onClick={saveSession} className="btn">Save</button>
         </div>
+      </header>
 
-        {/* Inbox + Save */}
-        <div className="mt-6 rounded-lg border dark:border-slate-700 p-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur">
-          <div className="flex items-center justify-between"><h2 className="font-semibold">Inbox</h2><span className="text-xs opacity-70">Newest first</span></div>
-          <ul className="mt-3 space-y-2 max-h-72 overflow-auto pr-1">
-            {messages.map(m => (
-              <li key={m.id} className="rounded border p-2 text-sm bg-white/60 dark:bg-slate-800/60">
-                <div className="flex items-center justify-between">
-                  <div className="font-medium">{m.from}
-                    {m.severity === 'urgent' && <span className="ml-2 rounded bg-red-600/15 px-2 py-0.5 text-xs text-red-700">URGENT</span>}
-                    {m.severity === 'warning' && <span className="ml-2 rounded bg-amber-600/15 px-2 py-0.5 text-xs text-amber-700">reminder</span>}
+      <div className="grid sm:grid-cols-3 gap-4 p-4 max-w-6xl mx-auto">
+        <section className="rounded border bg-white/70 p-4 backdrop-blur">
+          <h2 className="font-semibold mb-2">Tasks</h2>
+          <ul className="space-y-2">
+            {TASK_RULES.map(rule => {
+              const st = tasks[rule.key]
+              return (
+                <li key={rule.key} className={clsx('border rounded p-2 flex justify-between items-center',
+                  st.status === 'resolved' && 'bg-green-50 border-green-300',
+                  st.status === 'urgent' && 'bg-yellow-50 border-yellow-400',
+                  st.status === 'court' && 'bg-red-50 border-red-400'
+                )}>
+                  <div>
+                    <div className="font-medium">{rule.title}</div>
+                    <p className="text-xs text-slate-600">{rule.description}</p>
                   </div>
-                  <div className="text-[11px] opacity-70">{prettyTime(m.at)}</div>
+                  <button onClick={() => resolveTask(rule.key)} disabled={st.status === 'resolved'} className="btn-xs">
+                    {st.status === 'resolved' ? 'Fixed' : 'Fix'}
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+
+        <section className="col-span-2 rounded border bg-white/70 p-4 backdrop-blur">
+          <h2 className="font-semibold mb-2">Inbox</h2>
+          <ul className="space-y-2 max-h-80 overflow-auto text-sm">
+            {messages.map(m => (
+              <li key={m.id} className="p-2 border rounded bg-white/60">
+                <div className="flex justify-between">
+                  <span>{ICONS[m.from]} {m.from}</span>
+                  <span className="text-xs opacity-60">{pretty(m.at)}</span>
                 </div>
-                <p className="mt-1">{m.text}</p>
+                <p className={clsx('mt-1', m.severity === 'urgent' && 'text-red-700 font-semibold', m.severity === 'warning' && 'text-amber-700')}>
+                  {m.text}
+                </p>
               </li>
             ))}
           </ul>
-          <div className="mt-4 flex items-center gap-3">
-            <button className="btn" onClick={saveSession} disabled={saving}>{saving ? 'Saving…' : 'Save session to DB'}</button>
-            {saveStatus && <span className="text-xs opacity-80">{saveStatus}</span>}
-          </div>
-          <div aria-live="polite" className="sr-only" ref={liveRef} />
-        </div>
+        </section>
       </div>
 
       {showCourt && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4">
-          <div className="max-w-lg w-full rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-700 p-6 shadow-xl">
-            <h3 className="text-xl font-bold mb-2">⚖️ Court Room</h3>
-            <p className="text-sm opacity-80 mb-4">You breached: <span className="font-semibold">{showCourt.task.title}</span></p>
-            <div className="rounded border p-3 text-sm">
-              <p className="mb-1"><span className="font-semibold">Verdict:</span> Fine for breaking <em>{showCourt.task.lawOnBreach}</em>.</p>
-              <p className="opacity-80 text-xs">Time: {prettyTime(showCourt.when)}</p>
-            </div>
-            <div className="mt-4 flex gap-2 justify-end">
-              <button className="btn-outline" onClick={() => setShowCourt(null)}>Close</button>
-              <button className="btn" onClick={() => { resolveTask(showCourt.task.key); setShowCourt(null) }}>Appeal by fixing now</button>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+          <div className="bg-white p-6 rounded-xl max-w-md text-center">
+            <h3 className="text-xl font-bold mb-2">⚖️ Court Summons</h3>
+            <p className="text-sm mb-2">You ignored <strong>{showCourt.title}</strong>.</p>
+            <p className="text-xs text-red-700 mb-4">Fine under <em>{showCourt.lawOnBreach}</em>.</p>
+            <div className="flex justify-center gap-3">
+              <button onClick={() => { resolveTask(showCourt.key); setShowCourt(null) }} className="btn">Appeal & Fix</button>
+              <button onClick={() => setShowCourt(null)} className="btn-outline">Dismiss</button>
             </div>
           </div>
         </div>
       )}
 
+      {toast && <div className="fixed bottom-4 right-4 bg-slate-800 text-white px-3 py-2 rounded">{toast}</div>}
+
+      <div aria-live="polite" ref={liveRef} className="sr-only" />
+
       <style jsx global>{`
-        .btn { @apply rounded bg-slate-900 text-white px-3 py-1 text-sm disabled:opacity-50 dark:bg-slate-100 dark:text-slate-900; }
+        .btn { @apply rounded bg-slate-900 text-white px-3 py-1 text-sm disabled:opacity-50; }
         .btn-outline { @apply rounded border px-3 py-1 text-sm; }
-        .btn-xs { @apply rounded bg-slate-900 text-white px-2 py-0.5 text-xs disabled:opacity-50 dark:bg-slate-100 dark:text-slate-900; }
-        .h1 { @apply text-2xl sm:text-3xl font-bold; }
-        .section { @apply max-w-6xl mx-auto; }
+        .btn-xs { @apply rounded bg-slate-900 text-white px-2 py-0.5 text-xs disabled:opacity-50; }
       `}</style>
-    </section>
+    </main>
   )
 }
