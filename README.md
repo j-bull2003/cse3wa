@@ -24,7 +24,7 @@
 - [7. Accessibility](#7-accessibility)
 - [8. Data Persistence (Cookies & Storage)](#8-data-persistence-cookies--storage)
 - [9. GitHub Hygiene](#9-github-hygiene)
-- [10. Video Demonstration Plan](#10-video-demonstration-plan)
+- [10. Video Demo!](#10-video-demonstration-plan)
 - [11. References & Acknowledgements](#11-references--acknowledgements)
 - [12. License / Academic Note](#12-license--academic-note)
 
@@ -54,7 +54,6 @@ This project implements **Part 1** of the assignment brief: a Next.js applicatio
 | Accessibility compliance | Landmarks, roles, a11y tabs, focus styles | ✅ |
 | Cookies: remember menu tab | `last_menu`, tabs cookie in exported file | ✅ |
 | About page: name, student #, video | `app/about/page.tsx` (video placeholder) | ✅ |
-| **Homepage outputs code** | `QuickExport` widget — inline HTML+JS | ✅ |
 | **Tabs Page**: up to 15 tabs (+/−), editable headings & content, localStorage | `app/tabs/page.tsx` | ✅ |
 | **Output**: inline CSS only, no classes; works as `Hello.html` | Copy/Download from Tabs page | ✅ |
 | Extra pages: Escape Room, Coding Races, Court Room | Placeholder pages created | ✅ |
@@ -196,25 +195,21 @@ Each creates a working **Hello.html** with **no CSS classes**.
 ---
 
 ## 9. GitHub Hygiene
-- **Main** branch + **feature branches**:
-  - `feat/tabs-generator`
-  - `feat/themes-crt`
-  - `feat/nav-menus`
-- **Several commits** with descriptive messages.
-- `.gitignore` excludes `node_modules`.
-- **README** kept up to date.
+- **Main** branch + **feature branches**
 
 **Screenshots (placeholders):**
-- Commits: `docs/screenshots/commits.png`  
-- Branches: `docs/screenshots/branches.png`
+- Commits: `readme/github5.png`  
+- Branches: `readme/github1.png`
+- `readme/github2.png`
+- `readme/github3.png`
+- `readme/github4.png`
 
 ---
 
-## 10. Video Demonstration Plan
-**Length:** 3–8 minutes.  
-**Covers:** UI (Header/Nav/Footer/About), Themes (Light/Dark/CRT), Menus (Hamburger/Kebab w/ transforms), Tabs Generator ops (up to 15 tabs, edit headings/content, localStorage), **three outputs** (1/3/5 tabs) as working **Hello.html**, GitHub hygiene.
+## 10. Video Demo
 
-> A ready-to-read script is included in the project notes (see `docs/video-script.md` or the script provided in chat).
+https://youtu.be/zmlx5jKkNgw?si=aJWKVOp1PcRrXuCT
+
 
 ---
 
