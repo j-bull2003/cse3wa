@@ -1,0 +1,33 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" 
+  url      = env("DATABASE_URL")
+}
+
+model CourtSession {
+  id             String   @id @default(uuid())
+  createdAt      DateTime @default(now())
+  startedAt      BigInt?
+  minutesPlanned Int
+  running        Boolean
+  tasks          Json
+  messages       Json
+  meta           Json
+}
+
+enum LineStatus {
+  online
+  offline
+}
+
+model User {
+  id         String     @id @default(cuid())
+  name       String
+  lineStatus LineStatus @default(online)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}

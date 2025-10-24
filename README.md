@@ -19,8 +19,8 @@
 - [6. Features](#6-features)
   - [6.1 Themes](#61-themes)
   - [6.2 Navigation](#62-navigation)
-  - [6.4 Tabs Generator](#64-tabs-generator)
-  - [6.5 Mini Pages](#65-mini-pages)
+  - [6.3 Tabs Generator](#63-tabs-generator)
+  - [6.4 Mini Pages](#64-mini-pages)
 - [7. Accessibility](#7-accessibility)
 - [8. Data Persistence (Cookies & Storage)](#8-data-persistence-cookies--storage)
 - [9. GitHub Hygiene](#9-github-hygiene)
@@ -226,3 +226,29 @@ Coursework for **CSE3WA** at **La Trobe University**.
 Not for commercial use without permission. Please credit the author when referencing design or code.
 
 ---
+
+
+npx prisma generate
+
+# Bring up infra
+docker compose up -d postgres jaegertracing zipkin-all-in-one otel-collector prometheus
+
+# Prisma
+npx prisma generate
+npx prisma migrate deploy
+
+# App
+docker compose up -d --build web
+
+# Tests (and watch traces in Jaeger/Zipkin, metrics in Prometheus)
+BASE_URL=http://localhost npx playwright test
+
+docker run --name pg -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=appdb -p 5432:5432 -d postgres:16
+
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/appdb?schema=public"
+
+npx prisma db push
+
+npx prisma studio 
+
+NODE_ENV=test npx playwright test

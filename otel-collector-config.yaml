@@ -1,0 +1,43 @@
+receivers:
+  otlp:
+    protocols:
+      http: {}   # listening on 0.0.0.0:4318 per your compose
+      grpc: {}   # (also exposes 4317, OK to leave even if unused)
+
+processors:
+  batch: {}
+  # Optional: add memory_limiter, tail_sampling, attributes, etc.
+
+exporters:
+  # Export traces to Jaeger
+  jaeger:
+    endpoint: jaegertracing:14250
+    tls:
+      insecure: true
+  # Export traces to Zipkin (optional if you want both)
+  zipkin:
+    endpoint: http://zipkin-all-in-one:9411/api/v2/spans
+
+  # Expose Prometheus-scrapable metrics *from the Collector*.
+  # Your app sends OTLP metrics -> Collector -> this exporter -> /metrics
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    namespace: otel
+
+  # Also keep a debug console exporter while you iterate (optional)
+  logging:
+    loglevel: warn
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [jaeger, zipkin]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]
+  telemetry:
+    logs:
+      level: warn
