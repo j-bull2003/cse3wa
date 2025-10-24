@@ -232,24 +232,11 @@ export default function CourtRoomGameWithLogin() {
   const resolveTask = (key: TaskKey) =>
     setTasks(prev => ({ ...prev, [key]: { ...prev[key], status: 'resolved' } }))
 
-  /* ---------- Save Session ---------- */
-  const saveSession = async () => {
-    if (!user) return alert('Please log in first.')
-    setSaving(true)
-    try {
-      await fetch('/api/court-sessions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id, tasks, messages, practiceMode, minutes })
-      })
-      setToast('✅ Saved to DB!')
-    } catch {
-      setToast('⚠️ Save failed — check API.')
-    } finally {
-      setSaving(false)
-      setTimeout(() => setToast(null), 3000)
-    }
-  }
+  /* ---------- Stage-aware background visuals (minimal change) ---------- */
+  const bgStage = !started ? 'intro' : showCourt ? 'court' : 'running'
+  const bgCourtOpacity = bgStage === 'intro' ? 'opacity-60' : bgStage === 'running' ? 'opacity-80' : 'opacity-100'
+  const bgDeskOpacity  = bgStage === 'intro' ? 'opacity-50' : bgStage === 'running' ? 'opacity-70' : 'opacity-90'
+  const dimOverlay     = bgStage === 'court' ? 'bg-black/50' : 'bg-transparent'
 
   /* ---------- Login Screen ---------- */
   if (!user) {
@@ -296,19 +283,49 @@ export default function CourtRoomGameWithLogin() {
   /* ---------- Main Game ---------- */
   return (
     <main className="relative min-h-screen text-slate-900">
-      <div aria-hidden className="absolute inset-0 -z-10 bg-cover bg-center opacity-25" style={{ backgroundImage: "url('/courtroom.jpg')" }} />
-      <div aria-hidden className="absolute bottom-0 left-1/2 -translate-x-1/2 -z-10 w-[1200px] h-[400px] bg-no-repeat bg-contain opacity-60" style={{ backgroundImage: "url('/work-desk.png')" }} />
+      {/* Courtroom background (stage-aware opacity, no negative z-index) */}
+      <div
+        aria-hidden
+        className={clsx(
+          'absolute inset-0 bg-cover bg-center transition-opacity duration-700 pointer-events-none',
+          bgCourtOpacity
+        )}
+        style={{ backgroundImage: "url('https://courtroom-assets.s3.eu-north-1.amazonaws.com/courtroom.jpg')" }}
+      />
+      {/* Desk foreground anchored bottom (stage-aware opacity) */}
+      <div
+        aria-hidden
+        className={clsx(
+          'absolute bottom-0 left-1/2 -translate-x-1/2 w-[1200px] h-[400px] bg-no-repeat bg-contain transition-opacity duration-700 pointer-events-none',
+          bgDeskOpacity
+        )}
+        style={{ backgroundImage: "url('https://courtroom-assets.s3.eu-north-1.amazonaws.com/work-desk.png')" }}
+      />
+      {/* Dim overlay only during court */}
+      <div className={clsx('absolute inset-0 transition-colors duration-700 pointer-events-none', dimOverlay)} />
 
-      <header className="flex justify-between items-center p-4 border-b bg-white/70 backdrop-blur">
+      <header className="flex justify-between items-center p-4 border-b bg-white/70 backdrop-blur relative">
         <h1 className="text-lg font-semibold">Court Room Simulation</h1>
         <div className="flex gap-4 items-center text-sm">
           <span>👋 {user.name}</span>
           <span>Time: {Math.floor(timeLeft/60)}:{(timeLeft%60).toString().padStart(2,'0')}</span>
-          <button onClick={saveSession} className="btn">Save</button>
+          <button onClick={async () => {
+            if (!user) return alert('Please log in first.')
+            setSaving(true)
+            try {
+              await fetch('/api/court-sessions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: user.id, tasks, messages, practiceMode, minutes })
+              })
+              setToast('✅ Saved to DB!')
+            } catch { setToast('⚠️ Save failed — check API.') }
+            finally { setSaving(false); setTimeout(() => setToast(null), 3000) }
+          }} className="btn">Save</button>
         </div>
       </header>
 
-      <div className="grid sm:grid-cols-3 gap-4 p-4 max-w-6xl mx-auto">
+      <div className="grid sm:grid-cols-3 gap-4 p-4 max-w-6xl mx-auto relative">
         <section className="rounded border bg-white/70 p-4 backdrop-blur">
           <h2 className="font-semibold mb-2">Tasks</h2>
           <ul className="space-y-2">
@@ -324,7 +341,10 @@ export default function CourtRoomGameWithLogin() {
                     <div className="font-medium">{rule.title}</div>
                     <p className="text-xs text-slate-600">{rule.description}</p>
                   </div>
-                  <button onClick={() => resolveTask(rule.key)} disabled={st.status === 'resolved'} className="btn-xs">
+                  <button onClick={() => {
+                    setTasks(prev => ({ ...prev, [rule.key]: { ...prev[rule.key], status: 'resolved' } }))
+                    if (showCourt?.key === rule.key) setShowCourt(null)
+                  }} disabled={st.status === 'resolved'} className="btn-xs">
                     {st.status === 'resolved' ? 'Fixed' : 'Fix'}
                   </button>
                 </li>
@@ -352,13 +372,21 @@ export default function CourtRoomGameWithLogin() {
       </div>
 
       {showCourt && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60">
           <div className="bg-white p-6 rounded-xl max-w-md text-center">
             <h3 className="text-xl font-bold mb-2">⚖️ Court Summons</h3>
             <p className="text-sm mb-2">You ignored <strong>{showCourt.title}</strong>.</p>
             <p className="text-xs text-red-700 mb-4">Fine under <em>{showCourt.lawOnBreach}</em>.</p>
             <div className="flex justify-center gap-3">
-              <button onClick={() => { resolveTask(showCourt.key); setShowCourt(null) }} className="btn">Appeal & Fix</button>
+              <button
+                onClick={() => {
+                  setTasks(prev => ({ ...prev, [showCourt.key]: { ...prev[showCourt.key], status: 'resolved' } }))
+                  setShowCourt(null)
+                }}
+                className="btn"
+              >
+                Appeal & Fix
+              </button>
               <button onClick={() => setShowCourt(null)} className="btn-outline">Dismiss</button>
             </div>
           </div>
@@ -366,7 +394,6 @@ export default function CourtRoomGameWithLogin() {
       )}
 
       {toast && <div className="fixed bottom-4 right-4 bg-slate-800 text-white px-3 py-2 rounded">{toast}</div>}
-
       <div aria-live="polite" ref={liveRef} className="sr-only" />
 
       <style jsx global>{`

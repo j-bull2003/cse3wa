@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // change if needed: "mysql" | "sqlite" | "sqlserver" | "mongodb"
+  provider = "postgresql" 
   url      = env("DATABASE_URL")
 }
 
